@@ -1,5 +1,6 @@
 const express = require('express')
 var morgan = require('morgan')
+require('dotenv').config();
 const app = express()
 const port = 3000;
 
@@ -23,6 +24,8 @@ const userApi = require('./routes/userApi');
 app.use('/api/v1', userApi);
 const todoAPI = require('./routes/todoApi');
 app.use('/api/v1', todoAPI);
+const emailApi = require('./routes/sendEmailSchemaApi');
+app.use('/api/v1', emailApi);
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
