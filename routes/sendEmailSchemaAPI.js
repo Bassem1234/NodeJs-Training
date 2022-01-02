@@ -9,8 +9,8 @@ const transporter = nodemailer.createTransport({
     port: 465,
     host: "smtp.gmail.com",
     auth: {
-          user: process.env.MAIL,
-          pass: process.env.PASSWORD
+        user: process.env.MAIL,
+        pass: process.env.PASSWORD
     },
     //secure: true // Upgrade this later with STARTTLS --change this based on the PORT
 });
@@ -19,7 +19,7 @@ const transporter = nodemailer.createTransport({
 router.post('/email', async (req, res) => {
     try {
         const createdEmail = await email.create(req.body)
-        const {to, Subject, text} = req.body;
+        const { to, Subject, text } = req.body;
         const mailData = {
             from: createdEmail.from,
             to: createdEmail.to,
@@ -28,12 +28,12 @@ router.post('/email', async (req, res) => {
             html: createdEmail.html
         }
         const info = await transporter.sendMail(mailData);
-        res.status(200).send({message: 'Mail.send', message_id: info.messageId});
+        res.send({ message: 'Mail.send', message_id: info.messageId });
     }
 
     catch (err) {
         console.log(err);
-        res.status(500).json({message: 'Internal Server error'});
+        res.status(500).json({ message: 'Internal Server error' });
     }
 })
 
@@ -46,21 +46,21 @@ router.get('/email', async (req, res) => {
 
     catch (err) {
         console.log(err);
-        res.status(500).json({message: 'Internal Server error'});
+        res.status(500).json({ message: 'Internal Server error' });
     }
 });
 
 router.delete('/email/:id', async (req, res) => {
-    try{
+    try {
         const emailDeleted = await email.findByIdAndRemove(req.params.id);
         res.json({ message: 'user deleted successfully' });
-        }
-        catch(err){
-            console.log(err);
-            res.status(500).json({message: 'Internal server error'});
-        }
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 });
- router.get('/email/:id', async (req, res) => {
+router.get('/email/:id', async (req, res) => {
     try {
         const mail = await email.findById(req.params.id);
         res.json(mail);
@@ -69,7 +69,7 @@ router.delete('/email/:id', async (req, res) => {
         console.log(err);
         res.status(500).json({ message: 'Internal server error' });
     }
- })
+})
 
 
 
@@ -78,16 +78,45 @@ router.delete('/email/:id', async (req, res) => {
 
 //2ème méthode without MongoDb
 
-router.post('/text-mail', (req, res) => {
-    const mailData = {
-        from: 'bassem.rbaia1@gmail.com',
-        to: 'bassem.rbaia1@gmail.com',
-        Subject: 'subject',
-        text: 'text',
-        html: '<br>Hey there! </br><br> This is our first message sent with Nodeemailer</br>'
-    }
-})
+router.post('/html-mail', async (req, res) => {
+    try {
+        const mailData = {
+            from: 'bassem.rbaia1@gmail.com',
+            to: 'bassem.rbaia1@gmail.com',
+            Subject: 'subject',
+            text: 'text',
+            html: '<br>Hey there! </br><br> This is our first message sent with Node mailer</br>'
+        }
 
+        const info = await transporter.sendMail(mailData);
+        res.send({ message: "Mail send", message_id: info.messageId });
+    }
+    catch {
+        console.log(err);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+
+//3ème méthode without MongoDb
+
+router.post('/html-mail/v2', async (req, res) => {
+    try {
+        const mailData = {
+            from: 'bassem.rbaia1@gmail.com',
+            to: 'bassem.rbaia1@gmail.com',
+            Subject: 'subject',
+            html: '<br>Hey there! </br><br> This is our first message sent with Node mailer</br>'
+        }
+
+        const info = await transporter.sendMail(mailData);
+        res.send({ message: "Mail send", message_id: info.messageId });
+    }
+    catch {
+        console.log(err);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
 
 
 module.exports = router;
