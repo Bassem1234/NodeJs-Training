@@ -27,6 +27,9 @@ app.use('/api/v1', todoAPI);
 const emailApi = require('./routes/sendEmailSchemaApi');
 app.use('/api/v1', emailApi);
 
+const uploadApi = require('./routes/uploadApi');
+app.use('/api/v1', uploadApi);
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 })

@@ -125,5 +125,32 @@ router.post('/html-mail/v2', async (req, res) => {
     }
 });
 
+//4ème méthode without MongoDb
+
+router.post('/html-mail/v3/:name', async (req, res) => {
+    try {
+        //1. read template path
+        const templatePath = path.resolve('./mail_template', 'Notification_v2.html');
+        //2. read template content
+        const content = fs.readFileSync(templatePath, {encoding: 'utf-8'});
+        //3. rendering template
+        
+
+        const mailData = {
+            from: 'bassem.rbaia1@gmail.com',
+            to: 'bassem.rbaia1@gmail.com',
+            Subject: 'subject',
+            html: content
+        }
+
+        const info = await transporter.sendMail(mailData);
+        res.send({ message: "Mail send", message_id: info.messageId });
+    }
+    catch {
+        console.log(err);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
 
 module.exports = router;
