@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const nodemailer = require('nodemailer');
+const path = require('path');
+const fs = require('fs');
 const email = require('../models/sendEmailSchema');
 
 
@@ -102,11 +104,16 @@ router.post('/html-mail', async (req, res) => {
 
 router.post('/html-mail/v2', async (req, res) => {
     try {
+        //1. read template path
+        const templatePath = path.resolve('./mail_template', 'Notification_v1.html');
+        //2. read template content
+        const content = fs.readFileSync(templatePath, {encoding: 'utf-8'});
+
         const mailData = {
             from: 'bassem.rbaia1@gmail.com',
             to: 'bassem.rbaia1@gmail.com',
             Subject: 'subject',
-            html: '<br>Hey there! </br><br> This is our first message sent with Node mailer</br>'
+            html: content
         }
 
         const info = await transporter.sendMail(mailData);
