@@ -14,16 +14,21 @@ const myStorage = multer.diskStorage({
     }
 });
 
-const upload = multer({ storage: myStorage});
-router.post('/upload', upload.single('file'), async (req, res) => {
-    try {
-        console.log(req.file);
-        res.send({ message: 'File uploaded'});
-    }
-    catch(err) {
-        console.log(err);
-        res.status(500).json({ message: 'Internal server error'});
-    }
+const fileFilterFunction = (req, file, cb) => {
+const fileExtension = path.extname(file.originalname);
+const allowedExtension = ['.jpg', '.png', '.gif', '.jpeg'];
+cb(null, file.extname(allowedExtension.includes(fileExtension)))
+}
+const maxSize = 1*1024*1024;
+const Multer = multer({ storage: myStorage, fileFilter: fileFilterFunction, limits: {fileSize: maxSize}});
+router.post('/upload', Multer.single('file'), async (req, res) => {
+
+        if(req.file !== undefined){
+            res.send({ message: 'File uploaded successfully'});
+        }
+        else {
+            res.status(400).send({message: 'File not uploaded'})
+        }
 });
 
 module.exports = router;
