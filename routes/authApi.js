@@ -1,6 +1,11 @@
 const express = require('express');
 const router = express.Router();
+const jwt = require('jsonwebtoken');
+
+//require model
 const User = require('../models/userSchema');
+
+// require bcrypt and require the salt
 const bcrypt = require('bcrypt');
 
 router.post('/register', async (req, res) => {
@@ -35,8 +40,13 @@ router.post('/login', async (req, res) => {
         if (user) {
             const cmp = await bcrypt.compare(req.body.password, user.password);
             if(cmp) {
-                //.... further code to maintain authentification like jwt or sessions
-                res.send({message: 'Auth Successful'});
+                // create jwt token
+                const tokenData = {
+                    userId: user._id,
+                    email: user.email
+                };
+                const token = jwt.sign(tokenData, process.env.JWT_Secret, {expiresIn: process.env.JWT_EXPIRE});
+                res.send({message: 'Auth Successful', token: token});
             } 
             else {
                 res.send({message: "Wrong email or password"});

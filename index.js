@@ -33,8 +33,8 @@ app.use( uploadApi);
 const authApi = require('./routes/authApi');
 app.use('/api/v1',authApi);
 
-const cron = require('./crons/first-cron');
-app.use(cron);
+// const cron = require('./crons/first-cron');
+// app.use(cron);
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
