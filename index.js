@@ -7,6 +7,8 @@ const port = 3000;
 //database connection
 require('./database/connect');
 
+//bearer strategy with passport
+require('./passport/bearerStrategy');
 
 //config body parser
 

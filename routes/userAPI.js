@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
+const passport = require('passport');
 //require model
 const User = require('../models/userSchema');
 
 
 //get all users
-router.get('/users', async (req, res) => {
+router.get('/users', passport.authenticate('bearer', {session: false}), async (req, res) => {
     try {
         const users = await User.find({});
         res.json(users);
@@ -17,7 +18,7 @@ router.get('/users', async (req, res) => {
 });
 
 //get one user by id
-router.get('/users/:id', async (req, res) => {
+router.get('/users/:id',passport.authenticate('bearer', {session: false}), async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
         res.json(user);
@@ -29,7 +30,7 @@ router.get('/users/:id', async (req, res) => {
 });
 
 //add one user
-router.post('/users', async (req, res) => {
+router.post('/users',passport.authenticate('bearer', {session: false}), async (req, res) => {
     try{
     const createdUser = await User.create(req.body)
     res.json(createdUser);
@@ -41,7 +42,7 @@ router.post('/users', async (req, res) => {
 });
 
 //update a user by id
-router.put('/users/:id', async (req, res) => {
+router.put('/users/:id',passport.authenticate('bearer', {session: false}), async (req, res) => {
     try{
     const userToUpdate = await User.findByIdAndUpdate(req.params.id, req.body, { new: true })
     res.json(userToUpdate);
@@ -53,7 +54,7 @@ router.put('/users/:id', async (req, res) => {
 });
 
 //delete a user
-router.delete('/users/:id', async (req, res) => {
+router.delete('/users/:id',passport.authenticate('bearer', {session: false}), async (req, res) => {
     try{
     const userToDelete = await User.findByIdAndRemove(req.params.id)
     res.json({ message: 'user deleted successfully' });
@@ -65,7 +66,7 @@ router.delete('/users/:id', async (req, res) => {
 })
 
 //affect toDo to user
-router.put('/users/affect/:idUser/:idToDo', async (req, res) => {
+router.put('/users/affect/:idUser/:idToDo',passport.authenticate('bearer', {session: false}), async (req, res) => {
     try{
     const userToUpdate = await User.findByIdAndUpdate(req.params.idUser, {$push: {todos: req.params.idToDo}}, { new: true })
     res.json(userToUpdate);
@@ -78,7 +79,7 @@ router.put('/users/affect/:idUser/:idToDo', async (req, res) => {
 
 
 //desaffect toDo
-router.put('/users/desaffect/:idUser/:idToDo', async (req, res) => {
+router.put('/users/desaffect/:idUser/:idToDo',passport.authenticate('bearer', {session: false}), async (req, res) => {
     try{
     const userToUpdate = await User.findByIdAndUpdate(req.params.idUser, {$pull: {todos: req.params.idToDo}}, { new: true })
     res.json(userToUpdate);
@@ -92,7 +93,7 @@ router.put('/users/desaffect/:idUser/:idToDo', async (req, res) => {
 
 
 //get all users with todos
-router.get('/users-with-todos', async (req, res) => {
+router.get('/users-with-todos',passport.authenticate('bearer', {session: false}), async (req, res) => {
     try {
         const users = await User.find({}).populate('todos', 'name -_id createdAt');
         res.json(users);
